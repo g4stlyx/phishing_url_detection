@@ -1,0 +1,6 @@
+docs/
+
+# data, dataset and preprocessed version, is too large(280 mb) to upload on github, 
+# so you can download it from the original link below
+# https://archive.ics.uci.edu/dataset/967/phiusiil+phishing+url+dataset
+data/
