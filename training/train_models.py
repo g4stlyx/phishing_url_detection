@@ -30,6 +30,12 @@ class PhishingModelTrainer:
         train_df = pd.read_csv(train_path)
         test_df = pd.read_csv(test_path)
         
+        # Drop URLSimilarityIndex due to potential data leakage
+        if 'URLSimilarityIndex' in train_df.columns:
+            print("Dropping 'URLSimilarityIndex' due to potential data leakage...")
+            train_df = train_df.drop(columns=['URLSimilarityIndex'])
+            test_df = test_df.drop(columns=['URLSimilarityIndex'])
+        
         # the last column is target 'label'
         target_col = 'label'
         

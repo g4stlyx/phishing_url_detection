@@ -7,6 +7,9 @@ def generate_table_image():
     csv_path = os.path.join(base_dir, 'outputs', 'results', 'model_comparison.csv')
     output_path = os.path.join(base_dir, 'outputs', 'results', 'model_comparison_table.png')
     
+    # csv_path = os.path.join(base_dir, 'outputs', 'results_after_simplifying', 'constrained_model_comparison.csv')
+    # output_path = os.path.join(base_dir, 'outputs', 'results_after_simplifying', 'constrained_model_comparison_table.png')
+
     if not os.path.exists(csv_path):
         print(f"Error: {csv_path} not found.")
         return
