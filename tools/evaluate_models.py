@@ -32,16 +32,22 @@ class ModelEvaluator:
             self.models[model_name] = joblib.load(os.path.join(self.models_dir, f))
         print(f"Loaded {len(self.models)} models: {list(self.models.keys())}")
 
+    def _get_X_for_model(self, model):
+        if hasattr(model, 'feature_names_in_'):
+            return self.X_test[model.feature_names_in_]
+        return self.X_test
+
     def plot_roc_curves(self):
         print("Generating ROC Curves...")
         plt.figure(figsize=(10, 8))
         
         for name, model in self.models.items():
             try:
+                X_subset = self._get_X_for_model(model)
                 if hasattr(model, "predict_proba"):
-                    y_score = model.predict_proba(self.X_test)[:, 1]
+                    y_score = model.predict_proba(X_subset)[:, 1]
                 else:
-                    y_score = model.decision_function(self.X_test)
+                    y_score = model.decision_function(X_subset)
                 
                 fpr, tpr, _ = roc_curve(self.y_test, y_score)
                 roc_auc = auc(fpr, tpr)
@@ -64,7 +70,8 @@ class ModelEvaluator:
     def plot_confusion_matrices(self):
         print("Generating Confusion Matrices...")
         for name, model in self.models.items():
-            y_pred = model.predict(self.X_test)
+            X_subset = self._get_X_for_model(model)
+            y_pred = model.predict(X_subset)
             cm = confusion_matrix(self.y_test, y_pred)
             
             plt.figure(figsize=(6, 5))
@@ -79,12 +86,24 @@ class ModelEvaluator:
     def plot_feature_importance(self):
         print("Generating Feature Importance Plot...")
         # Prefer RandomForest, then DecisionTree
-        model = self.models.get('RandomForest') or self.models.get('DecisionTree')
+        model = None
+        for name in self.models:
+            if 'RandomForest' in name:
+                model = self.models[name]
+                break
+        if not model:
+            for name in self.models:
+                if 'DecisionTree' in name:
+                    model = self.models[name]
+                    break
         
         if model:
             if hasattr(model, 'feature_importances_'):
                 importances = model.feature_importances_
-                feature_names = self.X_test.columns
+                if hasattr(model, 'feature_names_in_'):
+                    feature_names = model.feature_names_in_
+                else:
+                    feature_names = self.X_test.columns
                 
                 feature_imp = pd.DataFrame({'Feature': feature_names, 'Importance': importances})
                 feature_imp = feature_imp.sort_values(by='Importance', ascending=False).head(15)
@@ -106,8 +125,8 @@ class ModelEvaluator:
 def main():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     data_dir = os.path.join(base_dir, 'data', 'processed')
-    models_dir = os.path.join(base_dir, 'outputs', 'models')
-    output_dir = os.path.join(base_dir, 'outputs', 'results')
+    models_dir = os.path.join(base_dir, 'outputs', 'results_after_simplifying', 'models')
+    output_dir = os.path.join(base_dir, 'outputs', 'results_after_simplifying', 'evaluation_plots')
 
     evaluator = ModelEvaluator(data_dir, models_dir, output_dir)
     evaluator.load_data()
