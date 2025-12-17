@@ -24,8 +24,8 @@ def investigate_leakage():
     print("\nInvestigating 'URLSimilarityIndex'...")
     print(df.groupby('label')['URLSimilarityIndex'].describe())
     
-    # Check if URLSimilarityIndex perfectly separates the classes
-    # Let's see if there is a threshold that separates them perfectly
+    # check if URLSimilarityIndex perfectly separates the classes
+    # to see if there is a threshold that separates them perfectly
     phishing = df[df['label'] == 1]['URLSimilarityIndex']
     legit = df[df['label'] == 0]['URLSimilarityIndex']
     
@@ -43,8 +43,7 @@ def investigate_leakage():
     else:
         print("No overlap in range!")
 
-    # Check other high correlation features
-    # LineOfCode
+    # Check other high correlation (LineOfCode)
     print("\nInvestigating 'LineOfCode'...")
     print(df.groupby('label')['LineOfCode'].describe())
 

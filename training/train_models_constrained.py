@@ -32,7 +32,6 @@ class ConstrainedPhishingTrainer:
         full_df = pd.concat([train_df, test_df])
         
         # Features to drop
-        # Features to drop
         drop_features = [
             'URLSimilarityIndex', 'HasSocialNet', 'HasCopyrightInfo', 'HasDescription', 
             'SpacialCharRatioInURL', 'IsHTTPS', 'DomainTitleMatchScore', 'HasSubmitButton', 
@@ -104,7 +103,7 @@ class ConstrainedPhishingTrainer:
                 rec = recall_score(self.y_test, y_pred)
                 f1 = f1_score(self.y_test, y_pred)
                 
-                # ROC AUC (needs probability or decision function)
+                # ROC AUC
                 try:
                     if hasattr(model, "predict_proba"):
                         y_prob = model.predict_proba(self.X_test)[:, 1]

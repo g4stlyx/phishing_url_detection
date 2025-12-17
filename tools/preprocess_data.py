@@ -26,7 +26,7 @@ class PhishingDataPreprocessor:
         """
         print("Cleaning data...")
         # Drop metadata and high-cardinality text columns
-        #! URLSimilarityIndex dropped to prevent data leakage
+        #! URLSimilarityIndex is dropped to prevent data leakage
         cols_to_drop = ['FILENAME', 'URL', 'Domain', 'Title', 'URLSimilarityIndex']
         print(f"Dropping columns: {cols_to_drop}")
         self.df = self.df.drop(columns=cols_to_drop, errors='ignore')
@@ -57,8 +57,8 @@ class PhishingDataPreprocessor:
 
     def handle_outliers(self):
         """
-        Optional: Handle outliers. 
-        For this project, we'll rely on Scaling, but we could clip extreme values.
+        Optional: Handle outliers.
+        For this project, I'll rely on Scaling, but I could clip extreme values.
         """
         print("Handling outliers (Clipping URLLength to 99th percentile)...")
         if 'URLLength' in self.df.columns:
